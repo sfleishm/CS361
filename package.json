@@ -1,0 +1,20 @@
+{
+  "name": "cs361_project",
+  "version": "1.0.0",
+  "description": "361 Project",
+  "main": "music.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "fetch": "^1.1.0",
+    "isomorphic-fetch": "^3.0.0",
+    "jsdom": "^16.6.0",
+    "node-fetch": "^2.6.1",
+    "spotify-web-api-node": "^5.0.2",
+    "tabletojson": "^2.0.7"
+  }
+}
