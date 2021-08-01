@@ -21,7 +21,6 @@ async function scraper(link) {
         const dom = await new JSDOM(text);
 
         fin_rates_table = dom.window.document.querySelector("#t-content-main-content > div > table > tbody > tr > td > div > table > tbody");
-        
 
         var firstRow = fin_rates_table.firstChild;
         // Grab # of columns (Excluding the date column)
@@ -72,11 +71,70 @@ async function scraper(link) {
     }
     else 
     {
-        console.log("No link was recognized to scrape");
+        const response = await fetch(link);
+        const text = await response.text();
+        const dom = await new JSDOM(text);
+
+        fin_rates_table = dom.window.document.querySelector("#t-content-main-content > div > table > tbody > tr > td > div > table > tbody");
+    
+        var firstRow = fin_rates_table.firstChild;
+        // Grab # of columns (Excluding the date column)
+        var columnCount = firstRow.childElementCount;
+        var rowCount = fin_rates_table.childElementCount;
+
+        console.log(rowCount);
+        var dateColumn = fin_rates_table.firstChild.firstChild;
+        console.log(dateColumn);
+        // console.log(JSON.stringify(fin_rates_table.innerHTML));
+        var dict = {};
+        dict["Date"] = {};
+        console.log(dict);
+
+        dateObject = dict["Date"];
+
+        var currentColumn = dateColumn;
+
+        var currentRow = firstRow;
+        for (let i = 1; i < rowCount; i++) 
+        {
+            currentRow = currentRow.nextElementSibling;
+            currentRowName = currentRow.firstChild.innerHTML;
+            // Append our dates as a new Key to the Date Value
+            // with an empty dict object
+            dict["Date"][currentRowName] = {};
+
+            // 
+            var currentColumn = dateColumn;
+            var nextItemInRow = currentRow.firstChild;
+            for (let j = 1; j < columnCount; j++) {
+                currentColumn = currentColumn.nextElementSibling;
+                nextItemInRow = nextItemInRow.nextElementSibling;
+                value = nextItemInRow.innerHTML;
+                // console.log(value)
+                let newKey = {};
+                let currentName = currentColumn.innerHTML;
+                dict["Date"][currentRowName][currentName] = value;
+            }
+            
+            
+        }
+
+        // console.log(dict);
+        var str = JSON.stringify(dict, null, 1); // spacing level = 2
+        console.log(str);
     }
 }
 
 scraper("https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yield");
+
+// Check items
+// [X] https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yield
+// [X] https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=realyield 
+// [X] https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=reallongtermrate
+
+// TODO: FIX IF NEEDED
+// https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=longtermrate
+// https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=billrates
 
 
 // Did not end up using tabletojson, wasn't working right 

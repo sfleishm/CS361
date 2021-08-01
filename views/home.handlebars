@@ -1,0 +1,43 @@
+<!-- Hello Part -->
+<div class="container">
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Welcome!</h1>
+        <p class="lead">Search for Artists / Songs</p>
+    </div>
+    
+    <!-- DIV for album pictures, this will hopefully use an API as well -->
+
+    <!-- Search Box 
+    - Radio Buttons for Artist, Song
+    -->
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <input style='margin: 10px 5px 10px 20px' type="radio" id='bookButtonFilter' name="search" class="btn btn-secondary">Artist</input>
+        <input style='margin: 10px 5px 10px 20px' type="radio" id='bookAuthorFilter' name="search" class="btn btn-secondary">Song</input>
+    </div>
+    <!-- Search Bar -->
+    <div class="input-group">
+        <input type="search" class="form-control rounded" onkeyup="myFunction()" id='bookFilter' placeholder="Search" aria-label="Search"
+            aria-describedby="search-addon" />
+        <button type="button" class="btn btn-outline-primary">search</button>
+    </div>
+    
+
+    <!-- DIV that will display the songs returned from the search request -->
+    <!-- This will include buttons that are able to submit to the div list below -->
+    {{!-- {{#each results}}
+            <tr>
+                <td><input value='{{this.title}}' data-id={{this.bookID}} disabled></td> 
+                <td><input value='{{this.genreName}}' data-id={{this.genreID}} disabled></td> 
+                <td><button type="button" class="btn btn-danger btn-delete">Delete</button></td>
+            </tr>
+    {{/each}}
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item">An item</li>
+        <li class="list-group-item">A second item</li>
+        <li class="list-group-item">A third item</li>
+    </ul> --}}
+    <script>
+
+    </script>
+    
+</div>
