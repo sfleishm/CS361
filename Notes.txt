@@ -1,0 +1,2 @@
+Onclick stuff
+https://www.javatpoint.com/javascript-onclick-event

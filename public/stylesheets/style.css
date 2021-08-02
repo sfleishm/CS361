@@ -1,0 +1,25 @@
+.navbar-brand
+{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    margin: auto;
+}
+
+/* #search-results
+{
+    padding-top: 50px;
+    max-width: 60%;
+} */
+
+#results-userlist
+{
+    padding-top: 50px;
+}
+
+p
+{
+    text-align: center
+}

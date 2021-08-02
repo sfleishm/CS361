@@ -9,11 +9,51 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 4843);
+app.set('port', 5231);
 
 app.use(express.static('public'))
 
+require('dotenv').config(); 
+// ---
+// var SpotifyWebApi = require('spotify-web-api-node');
+const SpotifyWebApi = require('spotify-web-api-node');
 
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+
+console.log(clientId, clientSecret)
+
+console.log()
+
+var credentials = {
+  clientId: clientId,
+  clientSecret: clientSecret
+};
+
+const spotifyApi = new SpotifyWebApi(credentials);
+
+module.exports = {spotifyApi};
+
+spotifyApi.clientCredentialsGrant().then(
+    function(data) {
+      console.log('The access token expires in ' + data.body['expires_in']);
+      console.log('The access token is ' + data.body['access_token']);
+  
+      // Save the access token so that it's used in future calls
+      spotifyApi.setAccessToken(data.body['access_token']);
+    },
+    function(err) {
+      console.log('Something went wrong when retrieving an access token', err);
+    }
+);
+// ---
+
+//Home View
+app.get('/home',function(req,res,next){
+    var context = {};
+    res.render('home', context);
+    }
+);
 
 app.use(function(req,res){
     res.status(404);
