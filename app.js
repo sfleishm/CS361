@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set("views", "views"); // Added to see if this works with heroku
+// app.set("views", "views"); // Added to see if this works with heroku
 // app.set('port', 5231);
 
 app.use(express.static('public'))
