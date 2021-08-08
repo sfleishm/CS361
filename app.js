@@ -5,8 +5,12 @@ var app = express();
 var cors = require('cors');
 app.use(cors({origin: true}));
 
+const path = require('path'); // REF: https://stackoverflow.com/questions/58801984/referenceerror-path-is-not-defined-express
+
 // var handlebars = require('express-handlebars').create({defaultLayout:'main'}); //Working locally
-var handlebars = require('express-handlebars').create({defaultLayout:'main', layoutsDir: "./views/layouts"}); // Testing to see if this will work with heroku
+var handlebars = require('express-handlebars').create({
+    defaultLayout:'main', 
+    layoutsDir: path.join(__dirname, '/views/layouts')}); // Testing to see if this will work with heroku
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
