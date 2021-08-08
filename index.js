@@ -21,9 +21,9 @@ app.set('view engine', 'handlebars');
 // app.set("views", "views"); // Added to see if this works with heroku
 // app.set('port', 5231);
 
-// app.use(express.static('public'))
-app.use(express.static(path.join(__dirname, 'public'))); // Jonathan suggested using this 
-app.set('views', path.join(__dirname, 'views'));
+app.use(express.static('public'))
+// app.use(express.static(path.join(__dirname, 'public'))); // Jonathan suggested using this 
+// app.set('views', path.join(__dirname, 'views'));
 
 const apiKey = process.env.LASTFM_APIKEY;
 
