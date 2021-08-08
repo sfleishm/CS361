@@ -6,7 +6,7 @@ var cors = require('cors');
 app.use(cors({origin: true}));
 
 const path = require('path'); // REF: https://stackoverflow.com/questions/58801984/referenceerror-path-is-not-defined-express
-
+// push for update
 // var handlebars = require('express-handlebars').create({defaultLayout:'main'}); //Working locally
 var handlebars = require('express-handlebars').create({
     defaultLayout:'main', 
