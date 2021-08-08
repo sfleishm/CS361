@@ -1,6 +1,10 @@
+const dotenv = require('dotenv').config(); 
 var express = require('express');
 
 var app = express();
+var cors = require('cors');
+app.use(cors({origin: true}));
+
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 var bodyParser = require('body-parser');
 
@@ -13,47 +17,200 @@ app.set('port', 5231);
 
 app.use(express.static('public'))
 
-require('dotenv').config(); 
-// ---
-// var SpotifyWebApi = require('spotify-web-api-node');
-const SpotifyWebApi = require('spotify-web-api-node');
+const apiKey = process.env.LASTFM_APIKEY;
 
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
+const searchScript = require('./public/scripts/searchScript.js');
 
-console.log(clientId, clientSecret)
+// exports.dotenv = process.env.LASTFM_APIKEY;
 
-console.log()
+// SCRAPER STUFF
+const fetch = require('isomorphic-fetch');
+const jsdom = require("jsdom");
+// const { query } = require('express');
+const { JSDOM } = jsdom;
 
-var credentials = {
-  clientId: clientId,
-  clientSecret: clientSecret
-};
-
-const spotifyApi = new SpotifyWebApi(credentials);
-
-module.exports = {spotifyApi};
-
-spotifyApi.clientCredentialsGrant().then(
-    function(data) {
-      console.log('The access token expires in ' + data.body['expires_in']);
-      console.log('The access token is ' + data.body['access_token']);
-  
-      // Save the access token so that it's used in future calls
-      spotifyApi.setAccessToken(data.body['access_token']);
-    },
-    function(err) {
-      console.log('Something went wrong when retrieving an access token', err);
-    }
-);
-// ---
-
+// const apiKey = ;
 //Home View
 app.get('/home',function(req,res,next){
     var context = {};
     res.render('home', context);
     }
 );
+
+app.get('/api', function(req,res,next)
+    {
+        get_query = []
+
+        for (var q in req.query) {
+            get_query.push({'key':q, 'value':req.query[q]})
+        }
+
+        var context = {};
+        // var context = {};
+
+        // context.dataList = get_query;
+
+        // console.log('hello world')
+        // console.log(req.query)
+
+        // res.render('api', context)
+        async function scraper(link) {
+            // If link is X do scraping for x specific website
+            // If link is Y etc. etc. 
+            // First link that mark sent over is this one https://discord.com/channels/856754424865095690/856754424865095693/868270947138961418
+            if (link == 'https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yield') 
+            {
+                const response = await fetch(link);
+                const text = await response.text();
+                const dom = await new JSDOM(text);
+        
+                fin_rates_table = dom.window.document.querySelector("#t-content-main-content > div > table > tbody > tr > td > div > table > tbody");
+        
+                var firstRow = fin_rates_table.firstChild;
+                // Grab # of columns (Excluding the date column)
+                var columnCount = firstRow.childElementCount;
+                var rowCount = fin_rates_table.childElementCount;
+        
+                console.log(rowCount);
+                var dateColumn = fin_rates_table.firstChild.firstChild;
+                console.log(dateColumn);
+                // console.log(JSON.stringify(fin_rates_table.innerHTML));
+                var dict = {};
+                dict["Date"] = {};
+                console.log(dict);
+        
+                dateObject = dict["Date"];
+        
+                var currentColumn = dateColumn;
+        
+                var currentRow = firstRow;
+                for (let i = 1; i < rowCount; i++) 
+                {
+                    currentRow = currentRow.nextElementSibling;
+                    currentRowName = currentRow.firstChild.innerHTML;
+                    // Append our dates as a new Key to the Date Value
+                    // with an empty dict object
+                    dict["Date"][currentRowName] = {};
+        
+                    // 
+                    var currentColumn = dateColumn;
+                    var nextItemInRow = currentRow.firstChild;
+                    for (let j = 1; j < columnCount; j++) {
+                        currentColumn = currentColumn.nextElementSibling;
+                        nextItemInRow = nextItemInRow.nextElementSibling;
+                        value = nextItemInRow.innerHTML;
+                        // console.log(value)
+                        let newKey = {};
+                        let currentName = currentColumn.innerHTML;
+                        dict["Date"][currentRowName][currentName] = value;
+                    }
+                    
+                    
+                }
+        
+                // console.log(dict);
+                // var str = JSON.stringify(dict, null, 2); // spacing level = 2
+                // console.log(str);
+                return dict;
+        
+            }
+            else 
+            {
+                const response = await fetch(link);
+                const text = await response.text();
+                const dom = await new JSDOM(text);
+        
+                fin_rates_table = dom.window.document.querySelector("#t-content-main-content > div > table > tbody > tr > td > div > table > tbody");
+            
+                var firstRow = fin_rates_table.firstChild;
+                // Grab # of columns (Excluding the date column)
+                var columnCount = firstRow.childElementCount;
+                var rowCount = fin_rates_table.childElementCount;
+        
+                console.log(rowCount);
+                var dateColumn = fin_rates_table.firstChild.firstChild;
+                console.log(dateColumn);
+                // console.log(JSON.stringify(fin_rates_table.innerHTML));
+                var dict = {};
+                dict["Date"] = {};
+                console.log(dict);
+        
+                dateObject = dict["Date"];
+        
+                var currentColumn = dateColumn;
+        
+                var currentRow = firstRow;
+                for (let i = 1; i < rowCount; i++) 
+                {
+                    currentRow = currentRow.nextElementSibling;
+                    currentRowName = currentRow.firstChild.innerHTML;
+                    // Append our dates as a new Key to the Date Value
+                    // with an empty dict object
+                    dict["Date"][currentRowName] = {};
+        
+                    // 
+                    var currentColumn = dateColumn;
+                    var nextItemInRow = currentRow.firstChild;
+                    for (let j = 1; j < columnCount; j++) {
+                        currentColumn = currentColumn.nextElementSibling;
+                        nextItemInRow = nextItemInRow.nextElementSibling;
+                        value = nextItemInRow.innerHTML;
+                        // console.log(value)
+                        let newKey = {};
+                        let currentName = currentColumn.innerHTML;
+                        dict["Date"][currentRowName][currentName] = value;
+                    }
+                }
+        
+                // console.log(dict);
+                // var str = JSON.stringify(dict, null, 2); // spacing level = 2
+                // console.log(str);
+                // return str;
+                return "Parameter not passed correctly";
+            }
+        }
+        async function asyncCall() {
+            console.log('caling')
+            // let data = await scraper("https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yield")
+            
+            var link = get_query[0].value;
+            let data = await scraper(link);
+            context.dataList = data;
+            // console.log(get_query[0].value);
+            console.log('hello world')
+            console.log(req.query)
+            console.log(data);
+
+            // res.render('api', context)
+            res.status(200).json({
+                data
+            });
+            console.log('done')
+        }
+        asyncCall();
+    }
+)
+
+app.get('/artistTracks', async function(req,res,next){
+    // console.log(req.query);
+    // console.log(req.query['artist']);
+    var toptracks = await searchScript.artistSearch(req.query['artist'], apiKey);
+    searchScript.sayHi();
+    res.status(200).json({
+        toptracks
+    });
+});
+
+// Route for handling last.fm track.search
+app.get('/songs', async function(req,res,next){
+    // console.log(req.query);
+    // console.log(req.query['track']);
+    var results = await searchScript.songSearch(req.query['track'], apiKey);
+    searchScript.sayHi();
+    res.status(200).json({
+        results
+    });
+})
 
 app.use(function(req,res){
     res.status(404);
@@ -67,5 +224,6 @@ app.use(function(err, req, res, next){
 });
 
 app.listen(app.get('port'), function(){
-    console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
+    console.log('Express started on http://localhost:' + app.get('port') + '/home' + '; press Ctrl-C to terminate.');
 });
+

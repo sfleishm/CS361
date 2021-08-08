@@ -1,38 +1,41 @@
 // Load from .env
-document.addEventListener('DOMContentLoaded', sayHi)
-document.addEventListener('DOMContentLoaded', get_search_criteria)
-
-require('dotenv').config(); 
-const { spotifyApi } = require('././app.js')
-
-// var SpotifyWebApi = require('spotify-web-api-node');
-// const SpotifyWebApi = require('spotify-web-api-node');
-
-// const clientId = process.env.CLIENT_ID;
-// const clientSecret = process.env.CLIENT_SECRET;
-
-// var credentials = {
-//   clientId: clientId,
-//   clientSecret: clientSecret
-// };
-
-// var spotifyApi = new SpotifyWebApi(credentials);
+document.addEventListener('DOMContentLoaded', searchBar)
+document.addEventListener('DOMContentLoaded', removeItem)
 
 // Do something with the search button is hit
-async function sayHi() {
+async function searchBar() {
   document.getElementById('search-button').addEventListener('click', function(event)
     {
+      // getToken();
+      // initSpotifyWrapper();
       clear_search_list();
       console.log("hi");
-      get_search_criteria();
-      console.log(get_search_criteria());
-      add_search_item();
-      // spotifyGetCreditals();
-      spotifyArtist();
+      var searchRadio = get_search_criteria();
+      if (searchRadio === "artist")
+      {
+        // Add artist search tracks
+        addAristTopTracks();
+      }
+      else if (searchRadio === "song")
+      {
+        // Add song search tracks
+        addSongTrcks();
+      }
+      event.preventDefault();
+      return false;
     }
   )
 }
 
+function removeItem()
+{
+  document.getElementById('deleteMe').addEventListener('click', function(event)
+    {
+      var currentElement = window.event;
+      currentElement.remove();
+    }
+  )
+}
 // Grab the radio value for the search result
 function get_search_criteria()
 {
@@ -52,13 +55,17 @@ function get_search_criteria()
 }
 
 // Add new list group item
-function add_search_item()
+async function addAristTopTracks()
 {
+  var jsonResult = await artistSearch();
+  var songList = jsonResult.track;
+  var attributes = jsonResult["@attr"];
+  console.log(attributes);
   var divList = document.getElementById('search-result-lists');
   for (let i = 0; i < 11; i ++)
   {
     var hyperNode = document.createElement("button");
-    var linkText = document.createTextNode(i);
+    var linkText = document.createTextNode(songList[i].name + ' - ' + attributes.artist);
 
     hyperNode.appendChild(linkText);
     hyperNode.onclick = add_to_user_list;
@@ -70,8 +77,35 @@ function add_search_item()
   }
 }
 
+async function addSongTrcks()
+{
+  var songList = await songSearch();
+  var songList = songList.track;
+  var divList = document.getElementById('search-result-lists');
+  for (let i = 0; i < 11; i ++)
+  {
+    var hyperNode = document.createElement("button");
+    var linkText = document.createTextNode(songList[i].name + ' - ' + songList[i].artist);
+
+    hyperNode.appendChild(linkText);
+    hyperNode.onclick = add_to_user_list;
+    hyperNode.className = "list-group-item list-group-item-action";
+    hyperNode.title = "my title test";
+    hyperNode.href = "google.com";
+  
+    divList.appendChild(hyperNode);
+  } 
+}
+
+function getSearchText()
+{
+  var searchText = document.getElementById('music_search');
+  var text = searchText.value;
+  return text;
+}
+
 // Clear the song list
-function clear_search_list()
+async function clear_search_list()
 {
   document.getElementById('search-result-lists').innerHTML = "";
 }
@@ -91,149 +125,47 @@ function add_to_user_list()
   addedSong.appendChild(songText);
   userList.appendChild(addedSong);
 
+  // var addedSong = document.createElement("ul");
+  // addedSong.className = "list-group list-group-horizontal";
+  // var songText = document.createElement("li");
+  // songText.className = "list-group-item";
+  // songText.innerHTML = text;
+  // var deleteButton = document.createElement("button");
+  // deleteButton.id = 'deleteMe';
+
+  // addedSong.appendChild(songText);
+  // addedSong.appendChild(deleteButton);
+  // userList.appendChild(addedSong);
 }
 
-function spotifyArtist()
+// REF: https://stackoverflow.com/questions/21518381/proper-way-to-wait-for-one-function-to-finish-before-continuing
+async function artistSearch() 
 {
-  spotifyApi.searchArtists('Daft Punk').then(
-    function(data) {
-      console.log(data.body);
-      var first_stats = data.body.artists.items[0];
-      var artist_id = first_stats.id;
-      // Get Elvis' albums
-      console.log('Artist albums', data.body);
-      spotifyApi.getArtistAlbums(artist_id).then(
-        function(data) {
-          console.log('Artist albums', data.body);
-          // return data.body;
-        },
-        function(err) {
-          console.error(err);
-          // return false;
-        }
-      );
-      var getArtistAlbums = function(artist_id) {
-        spotifyApi.getArtistAlbums(artist_id).then(
-          function(data) {
-            // console.log('Artist albums', data.body);
-            return data.body;
-          },
-          function(err) {
-            // console.error(err);
-            return false;
-          }
-        );
-      }
+  var searchResult = getSearchText();
+  var basicPath = "/artistTracks?";
+  var method = `artist=${searchResult}`;
+  
+  var completePath = basicPath + method;
 
-      var getAlbumLength = function() {
-        var items = getArtistAlbums.items.length;
-        return items;
-      }
-
-      for (let i = 0; i < getAlbumLength; i++) {
-        console.log(getArtistAlbums);
-      }
-      
-      // console.log(data.body.artists.items[0]);
-    },
-    function(err) {
-      console.log('Something went wrong!', err);
-    }
-  );
+  const response = await fetch(completePath);
+  const text = await response.json();
+  console.log(text);
+  return text.toptracks;
 }
 
-// const spotify = async() => {
-//   await spotifyApi.clientCredentialsGrant()
-//   .then(data => {
-//       console.log('The access token expires in ' + data.body['expires_in']);
-//       console.log('The access token is ' + data.body['access_token']);
+async function songSearch()
+{
+  var searchResult = getSearchText();
+  var basicPath = "/songs?";
+  var method = `track=${searchResult}`;
   
-//       // Save the access token so that it's used in future calls
-//       spotifyApi.setAccessToken(data.body['access_token']);
-//   })
-//   .then(() => {
-//       // do stuff with the code here
-//       // Get an artist or Song here
-//       spotifyApi.getArtist('2hazSY4Ef3aB9ATXW7F5w3')
-//        .then(function(data) {
-//             console.log('Artist information', data.body);
-//         }, function(err) {
-//             console.error(err);
-//       });
+  var completePath = basicPath + method;
 
-//   })
-//   .catch(err => {
-//       console.log('Something went wrong when retrieving an access token', err);
-//   });
-// }
+  const response = await fetch(completePath);
+  const text = await response.json();
+  console.log(text.results.trackmatches);
+  return text.results.trackmatches;
+  // return text.
+  // return text.resul.toptracks.track;
+}
 
-// Retrieve an access token.
-// spotifyApi.clientCredentialsGrant().then(
-//   function(data) {
-//     console.log('The access token expires in ' + data.body['expires_in']);
-//     console.log('The access token is ' + data.body['access_token']);
-
-//     // Save the access token so that it's used in future calls
-//     spotifyApi.setAccessToken(data.body['access_token']);
-//     // Do search using the access token
-//     // https://github.com/thelinmichael/spotify-web-api-node/blob/be15f1c742b35134ce5bd35521d8bf1ab1ba67cf/src/spotify-web-api.js#L270
-//     spotifyApi.searchArtists('Daft Punk').then(
-//       function(data) {
-//         console.log(data.body);
-//         var first_stats = data.body.artists.items[0];
-//         var artist_id = first_stats.id;
-//         // Get Elvis' albums
-//         console.log('Artist albums', data.body);
-//         spotifyApi.getArtistAlbums(artist_id).then(
-//           function(data) {
-//             console.log('Artist albums', data.body);
-//             // return data.body;
-//           },
-//           function(err) {
-//             console.error(err);
-//             // return false;
-//           }
-//         );
-//         var getArtistAlbums = function(artist_id) {
-//           spotifyApi.getArtistAlbums(artist_id).then(
-//             function(data) {
-//               // console.log('Artist albums', data.body);
-//               return data.body;
-//             },
-//             function(err) {
-//               // console.error(err);
-//               return false;
-//             }
-//           );
-//         }
-
-//         var getAlbumLength = function() {
-//           var items = getArtistAlbums.items.length;
-//           return items;
-//         }
-
-//         for (let i = 0; i < getAlbumLength; i++) {
-//           console.log(getArtistAlbums);
-//         }
-        
-//         // console.log(data.body.artists.items[0]);
-//       },
-//       function(err) {
-//         console.log('Something went wrong!', err);
-//       }
-//     );
-//   },
-//   function(err) {
-//     console.log('Something went wrong when retrieving an access token', err);
-//   }
-// );
-
-// // // Get Elvis' albums
-// // spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
-// //   function(data) {
-// //     console.log('Artist albums', data.body);
-// //   },
-// //   function(err) {
-// //     console.error(err);
-// //   }
-// // );

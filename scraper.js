@@ -3,9 +3,6 @@
 const fetch = require('isomorphic-fetch');
 const jsdom = require("jsdom");
 
-// 'use strict';
-// const tabletojson = require('tabletojson').Tabletojson;
-
 const { JSDOM } = jsdom;
 
 // Write a scraper function that takes a link 

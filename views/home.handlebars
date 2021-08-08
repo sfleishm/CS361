@@ -6,6 +6,32 @@
         <h1 class="display-4">Welcome!</h1>
         <p class="lead">Search for Artists / Songs</p>
     </div>
+
+    <!-- Carousel -->
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col">
+              <a href="https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc?si=i_X2ZeVIT1KSzWEZwm8dxw" target="_blank"><img src="./images/Daft_Punk_-_Discovery.jpg" class="d-block w-100 h-100 w-auto mx-auto" alt="..."></a>
+            </div>
+            <div class="col">
+              <a href="https://open.spotify.com/album/0bUTHlWbkSQysoM3VsWldT?si=vBhmOD8rQM-sfKeWgQkT5A" target="_blank"><img src="./images/Daftpunk-homework.jpg" class="d-block w-100 h-100 w-auto mx-auto" alt="...">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <!-- End Carousel -->
     
     <!-- DIV for album pictures, this will hopefully use an API as well -->
 
@@ -20,7 +46,7 @@
     <!-- Search Bar -->
     <div class="row">
         <div class="input-group">
-            <input type="search" class="form-control rounded" onkeyup="myFunction()" id='music_search' placeholder="Search" aria-label="Search"
+            <input type="search" class="form-control rounded" id='music_search' placeholder="Search" aria-label="Search"
                 aria-describedby="search-addon" />
             <button type="button" id="search-button" class="btn btn-outline-primary">search</button>
         </div>
