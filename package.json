@@ -1,6 +1,10 @@
 {
   "name": "cs361_project",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.19.0",
+    "npm" : "6.14.8"
+  },
   "description": "361 Project",
   "main": "index.js",
   "scripts": {
