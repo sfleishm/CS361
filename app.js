@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+app.set("views", "views");
 // app.set('port', 5231);
 
 app.use(express.static('public'))
