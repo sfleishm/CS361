@@ -10,7 +10,7 @@ const path = require('path'); // REF: https://stackoverflow.com/questions/588019
 // var handlebars = require('express-handlebars').create({defaultLayout:'main'}); //Working locally
 var handlebars = require('express-handlebars').create({
     defaultLayout:'main', 
-    layoutsDir: path.join(__dirname, 'views/layouts')}); // Testing to see if this will work with heroku
+    layoutsDir: path.join(__dirname, '/views/layouts')}); // Testing to see if this will work with heroku
 var bodyParser = require('body-parser');
 
 app.use(express.urlencoded({ extended: false }));
