@@ -223,7 +223,7 @@ app.use(function(err, req, res, next){
     res.render('500');
 });
 
-app.listen(process.env.PORT || 5000, function(){
-    console.log('Express started on http://localhost:' + process.env.PORT + '/home' + '; press Ctrl-C to terminate.');
+app.listen(process.env.PORT || 5231, function(){
+    console.log('Express started on http://localhost:' + '5231' + '/home' + '; press Ctrl-C to terminate.');
 });
 
