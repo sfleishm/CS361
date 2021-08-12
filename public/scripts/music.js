@@ -159,12 +159,12 @@ function addDeleteExportRow()
 }
 
 // Clear the user generated list 
+// then clear the delete export row since we dont want those showing when
+// there is nothing to delete / export
 function clearUserList()
 {
-  console.log("trying to clear");
   document.getElementById('added-song-list').innerHTML = "";
-
-  clearDeleteExport();
+  clearDeleteExport(); 
 }
 
 // Function to send selected song (button) down to the user created list
