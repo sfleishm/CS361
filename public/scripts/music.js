@@ -2,22 +2,6 @@
 document.addEventListener('DOMContentLoaded', onSearchBarClick)
 document.addEventListener('DOMContentLoaded', removeItem)
 
-// // Default SortableJS
-// import Sortable from 'sortablejs';
-
-// // Core SortableJS (without default plugins)
-// import Sortable from 'sortablejs/modular/sortable.core.esm.js';
-
-// // Complete SortableJS (with all plugins)
-// import Sortable from 'sortablejs/modular/sortable.complete.esm.js';
-
-// // List with handle
-// Sortable.create(added-song-list, {
-//   handle: '.my-handle',
-//   animation: 150
-// });
-
-
 // Do something with the search button is hit
 async function onSearchBarClick() {
   document.getElementById('search-button').addEventListener('click', function(event)
@@ -126,9 +110,72 @@ async function clearSearchList()
   document.getElementById('search-result-lists').innerHTML = "";
 }
 
-// Function to send selected song (button) down to the user created list
-function addToUserList()
+// Clear the delete export row
+function clearDeleteExport()
 {
+  document.getElementById('deleteButton').innerHTML = "";
+  document.getElementById('exportButton').innerHTML = "";
+}
+
+// If the user list is empty return true
+// If the user list has something in it return false
+async function getUserListStatus()
+{
+  var childCount = document.getElementById("added-song-list").childElementCount;
+
+  if (childCount == 0) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// If the user song list is not empty, do this function 
+// which will add a list item row with a delete and export button
+function addDeleteExportRow()
+{
+  // ADD DELETE BUTTON
+  var deleteDiv = document.getElementById('deleteButton');
+
+  var deleteItem = document.createElement("button");
+  deleteItem.className = "btn btn-danger";
+  deleteItem.id = "clear-list";
+  deleteItem.onclick = clearUserList;
+
+  var deleteText = document.createTextNode("CLEAR USER LIST");
+  deleteItem.appendChild(deleteText);
+  deleteDiv.appendChild(deleteItem);  
+  // ADD EXPORT BUTTON 
+  var exportDiv = document.getElementById('exportButton');
+
+  var exportItem = document.createElement("button");
+  exportItem.className = "btn btn-light";
+
+  var exportText = document.createTextNode("EXPORT ME");
+  exportItem.appendChild(exportText);
+  exportDiv.appendChild(exportItem); 
+
+}
+
+// Clear the user generated list 
+function clearUserList()
+{
+  console.log("trying to clear");
+  document.getElementById('added-song-list').innerHTML = "";
+
+  clearDeleteExport();
+}
+
+// Function to send selected song (button) down to the user created list
+async function addToUserList()
+{
+  // Add Delete Export Row if its the first song add
+  var tF = await getUserListStatus();
+  if (tF){
+    addDeleteExportRow();
+  }
+
   var userList = document.getElementById('added-song-list');
 
   var currentElement = window.event;

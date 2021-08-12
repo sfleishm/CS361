@@ -1,3 +1,7 @@
+/*  
+    CLASS: . 
+    ID: # 
+*/
 .navbar-brand
 {
     position: absolute;
@@ -35,4 +39,8 @@ p
 .my-handle {
     cursor: move;
     cursor: -webkit-grabbing;
-  }
+}
+
+#delete-export{
+    padding-top: 10px;
+}
