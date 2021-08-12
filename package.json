@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "engines": {
     "node": "12.19.0",
-    "npm" : "6.14.8"
+    "npm": "6.14.8"
   },
   "description": "361 Project",
   "main": "index.js",
@@ -24,7 +24,11 @@
     "isomorphic-fetch": "^3.0.0",
     "jsdom": "^16.6.0",
     "node-fetch": "^2.6.1",
+    "sortablejs": "^1.14.0",
     "spotify-web-api-node": "^5.0.2",
     "tabletojson": "^2.0.7"
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.10.7"
   }
 }

@@ -1,4 +1,6 @@
 <script type="text/javascript" src="/scripts/music.js"></script>
+<!-- Latest Sortable -->
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
 {{!-- <script type="module" src="/scripts/music.js"></script> --}}
 <!-- Hello Part -->
 <div class="container">
@@ -73,7 +75,15 @@
             </div>
         </div>
     </div>
-
+    
+    {{!-- Sortable Script that affects the user list --}} 
+    {{!-- REF:  https://github.com/SortableJS/Sortable/issues/1229
+                http://sortablejs.github.io/Sortable/ --}}
     <script>
+      var added_song_list = document.getElementById("added-song-list");
+      new Sortable(added_song_list, {
+          animation: 150,
+          ghostClass: 'blue-background-class'
+      });
     </script>
 </div>

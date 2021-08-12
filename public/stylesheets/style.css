@@ -31,3 +31,8 @@ p
     /* background-color: lightgoldenrodyellow; */
     background-color: whitesmoke;
 }
+
+.my-handle {
+    cursor: move;
+    cursor: -webkit-grabbing;
+  }

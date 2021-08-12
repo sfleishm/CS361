@@ -1,16 +1,32 @@
 // Load from .env
-document.addEventListener('DOMContentLoaded', searchBar)
+document.addEventListener('DOMContentLoaded', onSearchBarClick)
 document.addEventListener('DOMContentLoaded', removeItem)
 
+// // Default SortableJS
+// import Sortable from 'sortablejs';
+
+// // Core SortableJS (without default plugins)
+// import Sortable from 'sortablejs/modular/sortable.core.esm.js';
+
+// // Complete SortableJS (with all plugins)
+// import Sortable from 'sortablejs/modular/sortable.complete.esm.js';
+
+// // List with handle
+// Sortable.create(added-song-list, {
+//   handle: '.my-handle',
+//   animation: 150
+// });
+
+
 // Do something with the search button is hit
-async function searchBar() {
+async function onSearchBarClick() {
   document.getElementById('search-button').addEventListener('click', function(event)
     {
       // getToken();
       // initSpotifyWrapper();
-      clear_search_list();
+      clearSearchList();
       console.log("hi");
-      var searchRadio = get_search_criteria();
+      var searchRadio = getSearchCriteria();
       if (searchRadio === "artist")
       {
         // Add artist search tracks
@@ -37,7 +53,7 @@ function removeItem()
   )
 }
 // Grab the radio value for the search result
-function get_search_criteria()
+function getSearchCriteria()
 {
   var searchValue;
   if (document.getElementById('artist-radio').checked)
@@ -68,7 +84,7 @@ async function addAristTopTracks()
     var linkText = document.createTextNode(songList[i].name + ' - ' + attributes.artist);
 
     hyperNode.appendChild(linkText);
-    hyperNode.onclick = add_to_user_list;
+    hyperNode.onclick = addToUserList;
     hyperNode.className = "list-group-item list-group-item-action";
     hyperNode.title = "my title test";
     hyperNode.href = "google.com";
@@ -88,7 +104,7 @@ async function addSongTrcks()
     var linkText = document.createTextNode(songList[i].name + ' - ' + songList[i].artist);
 
     hyperNode.appendChild(linkText);
-    hyperNode.onclick = add_to_user_list;
+    hyperNode.onclick = addToUserList;
     hyperNode.className = "list-group-item list-group-item-action";
     hyperNode.title = "my title test";
     hyperNode.href = "google.com";
@@ -105,13 +121,13 @@ function getSearchText()
 }
 
 // Clear the song list
-async function clear_search_list()
+async function clearSearchList()
 {
   document.getElementById('search-result-lists').innerHTML = "";
 }
 
 // Function to send selected song (button) down to the user created list
-function add_to_user_list()
+function addToUserList()
 {
   var userList = document.getElementById('added-song-list');
 
@@ -120,8 +136,8 @@ function add_to_user_list()
 
   var addedSong = document.createElement("button");
   addedSong.className = "list-group-item list-group-item-action";
-  var songText = document.createTextNode(text);
 
+  var songText = document.createTextNode(text);
   addedSong.appendChild(songText);
   userList.appendChild(addedSong);
 
