@@ -49,3 +49,7 @@ p
     float: right;
     justify-content: right;
 }
+
+html {  
+    scroll-behavior: smooth;  
+}

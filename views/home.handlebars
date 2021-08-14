@@ -75,17 +75,20 @@
                 <div class="row" id="delete-export">  {{!-- DELETE AND EXPORT ROW --}}
                       <div class="col-6 text-center" id="deleteButton">
                       </div>
-                      <div class="col-6 text-center" id="exportButton">
-                      </div>
+                      <div class="col-6 text-center">
+                        <a id="link" href="#exportedList">
+                          <div class="text-center" id="exportButton">
+                          </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="container text-center" id="exportedList"></div>
     
-    {{!-- Sortable Script that affects the user list --}} 
-    {{!-- REF:  https://github.com/SortableJS/Sortable/issues/1229
-                http://sortablejs.github.io/Sortable/ --}}
+    
     <script>
       var added_song_list = document.getElementById("added-song-list");
       new Sortable(added_song_list, {

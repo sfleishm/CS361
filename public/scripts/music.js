@@ -226,10 +226,7 @@ function createDeleteButtonForUserList(addedSongDiv)
 async function getUserList()
 {
   var userSongList = document.getElementById('added-song-list');
-  var firstEl = userSongList.firstChild.innerHTML;
-  // console.log(userSongList.firstChild.firstChild.innerHTML);
-  console.log(userSongList.innerHTML);
-  console.log(firstEl);
+  var firstEl = userSongList;
   return firstEl;
 }
 
@@ -246,7 +243,42 @@ function removeMe()
 async function exportToText()
 {
   var firstEl = await getUserList();
+  var childCount = firstEl.childElementCount;
+  clearExportList();
+  createExportUserList(firstEl, childCount);
+  console.log(childCount);
+  console.log('hi');
   console.log(firstEl);
+}
+
+function createExportUserList(userListDiv, childCount)
+{
+  console.log("UserDivList", userListDiv, " child count", childCount);
+  var exportedArea = document.getElementById("exportedList");
+
+  var listParagraph = document.createElement("p");
+  listParagraph.innerHTML = "Here's your list! Select the text and copy to your friends :)";
+  exportedArea.appendChild(listParagraph);
+
+  var firstChildDiv = userListDiv.firstChild.nextSibling; // this locks onto our button
+  // Loop over all the children elements
+  for (let i = 0; i < childCount; i++)
+  {
+    var songArtist = firstChildDiv.textContent;
+    songArtist = songArtist.substring(0, songArtist.length - 6);
+    
+    var unorderedList = document.createElement("ul");
+    unorderedList.innerHTML = songArtist;
+    exportedArea.appendChild(unorderedList);
+
+    firstChildDiv = firstChildDiv.nextSibling;
+  }
+  
+}
+
+function clearExportList()
+{
+  document.getElementById('exportedList').innerHTML = " ";
 }
 
 // REF: https://stackoverflow.com/questions/21518381/proper-way-to-wait-for-one-function-to-finish-before-continuing
