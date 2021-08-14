@@ -6,38 +6,29 @@ var cors = require('cors');
 app.use(cors({origin: true}));
 
 const path = require('path'); // REF: https://stackoverflow.com/questions/58801984/referenceerror-path-is-not-defined-express
-// push for update
-// var handlebars = require('express-handlebars').create({defaultLayout:'main'}); //Working locally
+
 var handlebars = require('express-handlebars').create({
     defaultLayout:'main', 
-    layoutsDir: path.join(__dirname, '/views/Layouts')}); // Testing to see if this will work with heroku
-var bodyParser = require('body-parser');
+    layoutsDir: path.join(__dirname, '/views/Layouts')}); 
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-// app.set("views", "views"); // Added to see if this works with heroku
 // app.set('port', 5231);
 
 app.use(express.static('public'))
-// app.use(express.static(path.join(__dirname, 'public'))); // Jonathan suggested using this 
-// app.set('views', path.join(__dirname, 'views'));
 
 const apiKey = process.env.LASTFM_APIKEY;
 
 const searchScript = require('./public/scripts/searchScript.js');
 
-// exports.dotenv = process.env.LASTFM_APIKEY;
-
 // SCRAPER STUFF
 const fetch = require('isomorphic-fetch');
 const jsdom = require("jsdom");
-// const { query } = require('express');
 const { JSDOM } = jsdom;
 
-// const apiKey = ;
 //Home View
 app.get('/home',function(req,res,next){
     var context = {};
@@ -54,14 +45,7 @@ app.get('/api', function(req,res,next)
         }
 
         var context = {};
-        // var context = {};
 
-        // context.dataList = get_query;
-
-        // console.log('hello world')
-        // console.log(req.query)
-
-        // res.render('api', context)
         async function scraper(link) {
             // If link is X do scraping for x specific website
             // If link is Y etc. etc. 
@@ -82,7 +66,6 @@ app.get('/api', function(req,res,next)
                 console.log(rowCount);
                 var dateColumn = fin_rates_table.firstChild.firstChild;
                 console.log(dateColumn);
-                // console.log(JSON.stringify(fin_rates_table.innerHTML));
                 var dict = {};
                 dict["Date"] = {};
                 console.log(dict);
@@ -184,12 +167,10 @@ app.get('/api', function(req,res,next)
             var link = get_query[0].value;
             let data = await scraper(link);
             context.dataList = data;
-            // console.log(get_query[0].value);
             console.log('hello world')
             console.log(req.query)
             console.log(data);
 
-            // res.render('api', context)
             res.status(200).json({
                 data
             });
@@ -200,8 +181,6 @@ app.get('/api', function(req,res,next)
 )
 
 app.get('/artistTracks', async function(req,res,next){
-    // console.log(req.query);
-    // console.log(req.query['artist']);
     var toptracks = await searchScript.artistSearch(req.query['artist'], apiKey);
     searchScript.sayHi();
     res.status(200).json({
@@ -211,8 +190,6 @@ app.get('/artistTracks', async function(req,res,next){
 
 // Route for handling last.fm track.search
 app.get('/songs', async function(req,res,next){
-    // console.log(req.query);
-    // console.log(req.query['track']);
     var results = await searchScript.songSearch(req.query['track'], apiKey);
     searchScript.sayHi();
     res.status(200).json({

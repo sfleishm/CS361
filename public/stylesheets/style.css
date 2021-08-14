@@ -44,3 +44,8 @@ p
 #delete-export{
     padding-top: 10px;
 }
+
+.button-group{
+    float: right;
+    justify-content: right;
+}

@@ -1,15 +1,14 @@
 // Load from .env
 document.addEventListener('DOMContentLoaded', onSearchBarClick)
-document.addEventListener('DOMContentLoaded', removeItem)
+// document.addEventListener('DOMContentLoaded', removeItem)
+document.addEventListener('DOMContentLoaded', addedSongListDelegation)
+
 
 // Do something with the search button is hit
 async function onSearchBarClick() {
   document.getElementById('search-button').addEventListener('click', function(event)
     {
-      // getToken();
-      // initSpotifyWrapper();
       clearSearchList();
-      console.log("hi");
       var searchRadio = getSearchCriteria();
       if (searchRadio === "artist")
       {
@@ -27,14 +26,26 @@ async function onSearchBarClick() {
   )
 }
 
-function removeItem()
-{
-  document.getElementById('deleteMe').addEventListener('click', function(event)
-    {
-      var currentElement = window.event;
-      currentElement.remove();
+function addedSongListDelegation(){
+  document.getElementById("added-song-list").addEventListener('click', function(event){
+    var target = event.target;
+    if (target.id == "deleteButton") {
+      console.log('hit me');
+      removeItem(target);
+      target.innerHTML = " ";
     }
-  )
+  })
+}
+
+async function removeItem(target)
+{
+  var item = target;
+  item.parentElement.parentElement.remove();
+  
+  var status = await getUserListStatus();
+  if (status) {
+    clearUserList();
+  }
 }
 // Grab the radio value for the search result
 function getSearchCriteria()
@@ -151,6 +162,7 @@ function addDeleteExportRow()
 
   var exportItem = document.createElement("button");
   exportItem.className = "btn btn-light";
+  exportItem.onclick = exportToText;
 
   var exportText = document.createTextNode("EXPORT ME");
   exportItem.appendChild(exportText);
@@ -188,17 +200,53 @@ async function addToUserList()
   addedSong.appendChild(songText);
   userList.appendChild(addedSong);
 
-  // var addedSong = document.createElement("ul");
-  // addedSong.className = "list-group list-group-horizontal";
-  // var songText = document.createElement("li");
-  // songText.className = "list-group-item";
-  // songText.innerHTML = text;
-  // var deleteButton = document.createElement("button");
-  // deleteButton.id = 'deleteMe';
+  createDeleteButtonForUserList(addedSong);
+}
 
-  // addedSong.appendChild(songText);
-  // addedSong.appendChild(deleteButton);
-  // userList.appendChild(addedSong);
+// Creates the delete button for the user list
+// then takes the parameter addedSongDiv so that we can append
+// our newly created remove button
+function createDeleteButtonForUserList(addedSongDiv)
+{
+  var deleteSpan = document.createElement("span");
+  deleteSpan.className = "pull-right button-group";
+  var deleteButton = document.createElement("button");
+  deleteButton.className = "btn btn-danger";
+  deleteButton.id = "deleteButton";
+  deleteButton.innerHTML = "Remove";
+  var removeSpan = document.createElement("span");
+  removeSpan.className = "glyphicon glyphicon-remove";
+  removeSpan.value = "Delete";
+
+  deleteButton.appendChild(removeSpan);
+  deleteSpan.appendChild(deleteButton);
+  addedSongDiv.appendChild(deleteSpan);
+}
+
+async function getUserList()
+{
+  var userSongList = document.getElementById('added-song-list');
+  var firstEl = userSongList.firstChild.innerHTML;
+  // console.log(userSongList.firstChild.firstChild.innerHTML);
+  console.log(userSongList.innerHTML);
+  console.log(firstEl);
+  return firstEl;
+}
+
+// REF: https://stackoverflow.com/questions/56284370/remove-self-element-onclick
+function removeMe()
+{
+  console.log('hi');
+  var currentElement = window.event;                                            
+  console.log(currentElement);
+  currentElement.remove;      
+  
+}
+
+async function exportToText()
+{
+  var firstEl = await getUserList();
+  console.log(firstEl);
 }
 
 // REF: https://stackoverflow.com/questions/21518381/proper-way-to-wait-for-one-function-to-finish-before-continuing
@@ -228,7 +276,5 @@ async function songSearch()
   const text = await response.json();
   console.log(text.results.trackmatches);
   return text.results.trackmatches;
-  // return text.
-  // return text.resul.toptracks.track;
 }
 
